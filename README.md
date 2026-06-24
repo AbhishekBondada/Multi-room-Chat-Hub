@@ -403,9 +403,3 @@ Continuous polling is implemented on a **3-second interval** using client-side `
 This project is licensed under the MIT License - see the LICENSE file for details.
 
 ---
-
-## ✍️ Author
-- **Pavan**
-- **GitHub**: [pavan-github](https://github.com/pavan)
-- **LinkedIn**: [pavan-linkedin](https://linkedin.com/in/pavan)
-- **Email**: [pavan@example.com](mailto:pavan@example.com)
