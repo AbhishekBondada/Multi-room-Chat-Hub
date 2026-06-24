@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Multi-room Chat Hub</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- FontAwesome for Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- 1. Username/Login Screen Overlay -->
+  <div id="login-overlay" class="overlay active">
+    <div class="glass-card login-card animate-fade-in">
+      <div class="login-logo">
+        <i class="fa-solid fa-comments-dollar logo-icon"></i>
+        <h1>ChatHub</h1>
+      </div>
+      <p class="login-subtitle">Enter a username to join the multi-room chat rooms.</p>
+      
+      <form id="login-form">
+        <div class="input-group">
+          <label for="username-input">Username</label>
+          <div class="input-wrapper">
+            <i class="fa-solid fa-user input-icon"></i>
+            <input type="text" id="username-input" placeholder="e.g. PixelWarrior" required minlength="2" maxlength="20" autocomplete="off">
+          </div>
+        </div>
+        <div id="login-error" class="error-text hidden"></div>
+        <button type="submit" class="btn btn-primary btn-block">
+          Join Hub <i class="fa-solid fa-arrow-right-to-bracket btn-icon"></i>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 2. Main Chat App Layout -->
+  <div id="app-container" class="app-layout hidden">
+    
+    <!-- Sidebar: Rooms & Profile -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="app-logo">
+          <i class="fa-solid fa-comments-dollar logo-icon"></i>
+          <span>ChatHub</span>
+        </div>
+        <!-- Light/Dark Toggle -->
+        <button id="theme-toggle" class="theme-btn" title="Toggle Theme">
+          <i class="fa-solid fa-moon"></i>
+        </button>
+      </div>
+
+      <!-- Current Profile Summary -->
+      <div class="profile-card">
+        <div class="profile-info">
+          <div class="avatar-placeholder" id="user-avatar">?</div>
+          <div class="profile-details">
+            <h3 id="current-username">Username</h3>
+            <span class="status-indicator online">Active</span>
+          </div>
+        </div>
+        <button id="logout-btn" class="logout-btn" title="Switch Username">
+          <i class="fa-solid fa-right-from-bracket"></i>
+        </button>
+      </div>
+
+      <!-- Room Navigation Panel -->
+      <div class="sidebar-section">
+        <div class="section-title">
+          <span>CHAT ROOMS</span>
+          <button id="open-create-room-btn" class="add-room-btn" title="Create New Room">
+            <i class="fa-solid fa-plus"></i>
+          </button>
+        </div>
+        <div class="room-search-bar">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" id="room-list-filter" placeholder="Filter rooms...">
+        </div>
+        <nav id="room-list" class="room-nav-list">
+          <!-- Dynamically populated room items -->
+          <div class="loading-spinner"><i class="fa-solid fa-spinner fa-spin"></i> Loading rooms...</div>
+        </nav>
+      </div>
+    </aside>
+
+    <!-- Main Chat Workspace -->
+    <main class="chat-workspace">
+      <!-- Chat Header -->
+      <header class="chat-header">
+        <div class="room-details-header">
+          <button id="sidebar-mobile-toggle" class="mobile-menu-btn">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <div class="room-title-info">
+            <h2 id="active-room-name">Loading Room...</h2>
+            <p id="active-room-desc">Room description goes here...</p>
+          </div>
+        </div>
+
+        <div class="chat-header-actions">
+          <!-- In-room Message Search Bar -->
+          <div class="message-search-wrapper">
+            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+            <input type="text" id="message-search-input" placeholder="Search messages in room...">
+            <button id="clear-search-btn" class="clear-btn hidden" title="Clear Search">
+              <i class="fa-solid fa-xmark"></i>
+            </button>
+          </div>
+          <button id="users-mobile-toggle" class="mobile-users-btn" title="Show Users">
+            <i class="fa-solid fa-users"></i>
+          </button>
+        </div>
+      </header>
+
+      <!-- Messages Area -->
+      <div class="messages-container" id="messages-container">
+        <!-- Messages will be dynamically rendered here -->
+        <div class="empty-chat">
+          <i class="fa-solid fa-comments"></i>
+          <p>Select a room to start chatting!</p>
+        </div>
+      </div>
+
+      <!-- Typing Indicator -->
+      <div id="typing-indicator" class="typing-indicator hidden">
+        <span></span><span></span><span></span> <span class="typing-text">Someone is typing...</span>
+      </div>
+
+      <!-- Message Input Area -->
+      <footer class="chat-input-area">
+        <form id="message-form" class="message-input-form">
+          <div class="input-field-wrapper">
+            <input type="text" id="message-input" placeholder="Type a message here..." required autocomplete="off">
+          </div>
+          <button type="submit" id="send-btn" class="send-btn" title="Send Message">
+            <i class="fa-solid fa-paper-plane"></i>
+          </button>
+        </form>
+      </footer>
+    </main>
+
+    <!-- Online Users Sidebar (Right side) -->
+    <aside id="online-users-sidebar" class="users-sidebar">
+      <div class="users-sidebar-header">
+        <h3>Online Users</h3>
+        <span class="user-count-badge" id="online-user-count">0</span>
+        <button id="close-users-sidebar" class="close-users-btn">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="users-list" id="online-users-list">
+        <!-- Dynamically populated online users -->
+      </div>
+    </aside>
+
+  </div>
+
+  <!-- 3. Create Room Modal -->
+  <div id="create-room-modal" class="modal-overlay hidden">
+    <div class="glass-card modal-card animate-fade-in">
+      <div class="modal-header">
+        <h2>Create New Room</h2>
+        <button id="close-modal-btn" class="close-modal-icon">&times;</button>
+      </div>
+      <form id="create-room-form">
+        <div class="input-group">
+          <label for="new-room-name">Room Name</label>
+          <div class="input-wrapper">
+            <i class="fa-solid fa-hashtag input-icon"></i>
+            <input type="text" id="new-room-name" placeholder="e.g. web-dev" required minlength="2" maxlength="20" autocomplete="off">
+          </div>
+          <span class="help-text">Alphanumeric, dashes, underscores, spaces.</span>
+        </div>
+        <div class="input-group">
+          <label for="new-room-desc">Description</label>
+          <div class="input-wrapper">
+            <i class="fa-solid fa-circle-info input-icon"></i>
+            <input type="text" id="new-room-desc" placeholder="What is this room about? (Optional)" maxlength="80" autocomplete="off">
+          </div>
+        </div>
+        <div id="create-room-error" class="error-text hidden"></div>
+        <div class="modal-actions">
+          <button type="button" id="cancel-create-btn" class="btn btn-secondary">Cancel</button>
+          <button type="submit" class="btn btn-primary">Create Room</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

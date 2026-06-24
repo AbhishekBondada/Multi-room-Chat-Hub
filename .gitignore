@@ -1,0 +1,13 @@
+# Dependencies
+node_modules/
+
+# Local databases (JSON fallback)
+backend/data/
+
+# Environment configurations
+.env
+.env.local
+
+# Operating system files
+.DS_Store
+Thumbs.db
